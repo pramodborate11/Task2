@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stopwatch</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+  }
+
+  #stopwatch {
+    font-size: 2rem;
+    margin: 50px auto;
+  }
+
+  #buttons {
+    margin-top: 20px;
+  }
+
+  #lapTimes {
+    margin-top: 20px;
+    text-align: left;
+  }
+</style>
+</head>
+<body>
+<div id="stopwatch">00:00:00</div>
+<div id="buttons">
+  <button onclick="startStop()">Start</button>
+  <button onclick="pauseResume()">Pause</button>
+  <button onclick="reset()">Reset</button>
+</div>
+<div id="lapTimes"></div>
+
+<script>
+  let startTime;
+  let elapsedTime = 0;
+  let timerInterval;
+  let running = false;
+
+  function startStop() {
+    if (running) {
+      clearInterval(timerInterval);
+      running = false;
+    } else {
+      startTime = Date.now() - elapsedTime;
+      timerInterval = setInterval(updateTime, 10);
+      running = true;
+    }
+  }
+
+  function pauseResume() {
+    if (running) {
+      clearInterval(timerInterval);
+      running = false;
+    } else {
+      startTime = Date.now() - elapsedTime;
+      timerInterval = setInterval(updateTime, 10);
+      running = true;
+    }
+  }
+
+  function reset() {
+    clearInterval(timerInterval);
+    running = false;
+    elapsedTime = 0;
+    document.getElementById("stopwatch").innerText = "00:00:00";
+    document.getElementById("lapTimes").innerText = "";
+  }
+
+  function updateTime() {
+    const currentTime = Date.now();
+    elapsedTime = currentTime - startTime;
+    const formattedTime = formatTime(elapsedTime);
+    document.getElementById("stopwatch").innerText = formattedTime;
+  }
+
+  function formatTime(time) {
+    const date = new Date(time);
+    const minutes = padTime(date.getMinutes());
+    const seconds = padTime(date.getSeconds());
+    const milliseconds = padTime(Math.floor(date.getMilliseconds() / 10));
+    return `${minutes}:${seconds}:${milliseconds}`;
+  }
+
+  function padTime(val) {
+    return val < 10 ? "0" + val : val;
+  }
+
+  function lap() {
+    const lapTime = document.getElementById("stopwatch").innerText;
+    const lapTimesDiv = document.getElementById("lapTimes");
+    const lapTimeElement = document.createElement("div");
+    lapTimeElement.innerText = lapTime;
+    lapTimesDiv.appendChild(lapTimeElement);
+  }
+</script>
+</body>
+</html>
